@@ -16,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import wily.legacy.client.LegacyOptions;
 import wily.legacy.client.Offset;
 import wily.legacy.util.ScreenUtil;
 
@@ -38,7 +40,7 @@ public abstract class RecipeToastMixin implements Toast {
     }
     @Inject(method = "addOrUpdate", at = @At("HEAD"), cancellable = true)
     private static void addOrUpdate(ToastComponent toastComponent, RecipeHolder<?> recipeHolder, CallbackInfo ci) {
-        if (!ScreenUtil.hasClassicCrafting()) ci.cancel();
+        if (!ScreenUtil.hasClassicCrafting() || !ScreenUtil.showVanillaRecipeBook()) ci.cancel();
     }
     @Inject(method = "render", at = @At(value = "HEAD"), cancellable = true)
     public void render(GuiGraphics guiGraphics, ToastComponent toastComponent, long l, CallbackInfoReturnable<Visibility> cir) {

@@ -8,5 +8,17 @@
       "mob/horse/idle4"
     ],
     "subtitle": "subtitles.entity.horse.ambient"
+  },
+  "ui.loom.select_pattern": {
+    "replace": true,
+    "sounds": [
+      "random/click_stereo"
+    ]
+  },
+  "ui.stonecutter.select_recipe": {
+    "replace": true,
+    "sounds": [
+      "random/click_stereo"
+    ]
   }
 }

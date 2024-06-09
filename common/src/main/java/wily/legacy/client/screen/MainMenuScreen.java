@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.toasts.SystemToast;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,7 @@ import wily.legacy.Legacy4JClient;
 import java.io.IOException;
 import java.util.Objects;
 
-import static wily.legacy.util.ScreenUtil.renderDefaultBackground;
+//import static wily.legacy.util.ScreenUtil.renderDefaultBackground;
 
 public class MainMenuScreen extends RenderableVListScreen {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -30,6 +31,8 @@ public class MainMenuScreen extends RenderableVListScreen {
     private SplashRenderer splash;
     @Nullable
     private WarningLabel warningLabel;
+    @Nullable
+    private Button resetDemoButton;
 
     public MainMenuScreen() {
         super(Component.translatable("narrator.screen.title"), b->{});
@@ -37,9 +40,16 @@ public class MainMenuScreen extends RenderableVListScreen {
         minecraft = Minecraft.getInstance();
         if (minecraft.isDemo()) createDemoMenuOptions();
         else this.createNormalMenuOptions();
-        renderableVList.addRenderable(openScreenButton(Component.translatable("legacy.menu.mods"), () -> new ModsScreen(this)).build());
-        renderableVList.addRenderable(openScreenButton(Component.translatable("options.language"), () -> new LegacyLanguageScreen(this, this.minecraft.getLanguageManager())).build());
+        /*renderableVList.addRenderable(openScreenButton(Component.translatable("legacy.menu.mods"), () -> new ModsScreen(this)).build());
+        renderableVList.addRenderable(openScreenButton(Component.translatable("options.language"), () -> new LegacyLanguageScreen(this, this.minecraft.getLanguageManager())).build());*/
+        /*Button menuButton;
+        renderableVList.addRenderable(menuButton = Button.builder(Component.translatable("legacy.menu.leaderboards"), button -> this.minecraft.setScreen(new LeaderboardsScreen(this))).build());
+        menuButton.active = false;
+        renderableVList.addRenderable(menuButton = Button.builder(Component.translatable("gui.advancements"), button -> this.minecraft.setScreen(new LegacyAdvancementsScreen(this,this.minecraft.getConnection().getAdvancements()))).build());
+        menuButton.active = false;*/
         renderableVList.addRenderable(openScreenButton(Component.translatable("menu.options"), () -> new HelpOptionsScreen(this)).build());
+        if(minecraft.isDemo())
+            renderableVList.addRenderable(Button.builder(Component.translatable("legacy.menu.unlock_full_game"),ConfirmLinkScreen.confirmLink(this,"https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc")).build());
         renderableVList.addRenderable(Button.builder(Component.translatable("menu.quit"), (button) -> minecraft.setScreen(new ExitConfirmationScreen(this))).build());
     }
 
@@ -74,8 +84,7 @@ public class MainMenuScreen extends RenderableVListScreen {
             }
 
         }).build());
-        Button secondButton;
-        renderableVList.addRenderable(secondButton = Button.builder(Component.translatable("menu.resetdemo"), (button) -> {
+        renderableVList.addRenderable(resetDemoButton = Button.builder(Component.translatable("menu.resetdemo"), (button) -> {
             LevelStorageSource levelStorageSource = this.minecraft.getLevelSource();
 
             try {
@@ -106,7 +115,7 @@ public class MainMenuScreen extends RenderableVListScreen {
             }
 
         }).build());
-        secondButton.active = bl;
+        resetDemoButton.active = bl;
     }
 
     private boolean checkDemoWorldPresence() {
@@ -168,6 +177,7 @@ public class MainMenuScreen extends RenderableVListScreen {
 
                 try {
                     levelStorageAccess.deleteLevel();
+                    resetDemoButton.active = false;
                 } catch (Throwable var6) {
                     if (levelStorageAccess != null) {
                         try {

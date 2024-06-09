@@ -65,7 +65,7 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
             super.init();
             this.widthTooNarrow = this.width < 379;
             this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-            if (((LegacyOptions) minecraft.options).showVanillaRecipeBook().get() &&
+            if (ScreenUtil.showVanillaRecipeBook() &&
                     hasClassicCrafting()) {
                 this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
                 recipeButton = this.addRenderableWidget(new ImageButton(this.leftPos + 180, topPos + 71, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, (button) -> {

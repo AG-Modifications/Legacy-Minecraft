@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,10 +23,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import wily.legacy.Legacy4JClient;
 import wily.legacy.client.controller.ControllerBinding;
+import wily.legacy.client.controller.LegacyKeyMapping;
 import wily.legacy.client.screen.ControlTooltip;
 import wily.legacy.util.ScreenUtil;
 
+import java.beans.Visibility;
 import java.util.List;
 
 @Mixin(AdvancementToast.class)
@@ -37,7 +42,7 @@ public abstract class AdvancementToastMixin implements Toast {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void render(GuiGraphics guiGraphics, ToastComponent toastComponent, long l, CallbackInfoReturnable<Visibility> cir) {
-        Component holdToView = Component.translatable("legacy.menu.advancements.toast", ControlTooltip.getActiveType().isKeyboard() ? ControlTooltip.getKeyIcon(InputConstants.KEY_E,true) : ControllerBinding.LEFT_BUTTON.bindingState.getIcon(true));
+        Component holdToView = Component.translatable("legacy.menu.advancements.toast", ControlTooltip.getActiveType().isKeyboard() ? ControlTooltip.getKeyIcon(((LegacyKeyMapping)Legacy4JClient.keyCrafting).getKey().getValue(),true) : ControllerBinding.LEFT_BUTTON.bindingState.getIcon(true));
         Font font= Minecraft.getInstance().font;
         DisplayInfo displayInfo = this.advancement.value().display().orElse(null);
         width = 82 + (displayInfo == null ? 0 : Math.max(font.width(holdToView), Math.max(font.width(displayInfo.getTitle()) * 3/2,font.width(displayInfo.getType().getDisplayName()))));

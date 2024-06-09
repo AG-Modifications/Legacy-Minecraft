@@ -27,6 +27,7 @@ import wily.legacy.Legacy4JClient;
 import wily.legacy.client.LegacyTip;
 import wily.legacy.client.LegacyTipManager;
 import wily.legacy.client.controller.ControllerBinding;
+import wily.legacy.client.controller.LegacyKeyMapping;
 import wily.legacy.client.screen.ControlTooltip;
 import wily.legacy.client.screen.LegacyIconHolder;
 import wily.legacy.client.screen.LegacyMenuAccess;
@@ -78,8 +79,8 @@ AbstractContainerScreenMixin extends Screen implements LegacyMenuAccess {
             add(()->getActiveType().isKeyboard() ? getKeyIcon(InputConstants.KEY_ESCAPE,true) : ControllerBinding.RIGHT_BUTTON.bindingState.getIcon(true),()->CONTROL_ACTION_CACHE.getUnchecked("legacy.action.exit")).
             add(()->getActiveType().isKeyboard() ? getKeyIcon(InputConstants.MOUSE_BUTTON_RIGHT,true) : ControllerBinding.LEFT_BUTTON.bindingState.getIcon(true),()->getHoveredSlot() != null && getHoveredSlot().getItem().getCount() > 1 ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.take_half") : getHoveredSlot() != null && !menu.getCarried().isEmpty() && getHoveredSlot().hasItem() && Legacy4J.canRepair(getHoveredSlot().getItem(),menu.getCarried()) ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.repair") : null).
             add(()->getActiveType().isKeyboard() ? COMPOUND_COMPONENT_FUNCTION.apply(new Component[]{getKeyIcon(InputConstants.MOUSE_BUTTON_LEFT,true),PLUS,getKeyIcon(InputConstants.KEY_LSHIFT,true)}) : ControllerBinding.UP_BUTTON.bindingState.getIcon(true),()-> getHoveredSlot() != null && getHoveredSlot().hasItem() ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.quick_move") : null).
-            add(()->getActiveType().isKeyboard() ?  getKeyIcon(InputConstants.KEY_W,true) : ControllerBinding.RIGHT_TRIGGER.bindingState.getIcon(true),()->getHoveredSlot() != null && getHoveredSlot().hasItem() ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.whats_this") : null).
-            add(()->getActiveType().isKeyboard() ?  getKeyIcon(InputConstants.MOUSE_BUTTON_LEFT,true) : ControllerBinding.LEFT_TRIGGER.bindingState.getIcon(true),()-> menu.getCarried().getCount() > 1 ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.distribute") : null);
+            add(()->getActiveType().isKeyboard() ? getKeyIcon(((LegacyKeyMapping)minecraft.options.keyUp).getKey().getValue(),true) : ControllerBinding.RIGHT_TRIGGER.bindingState.getIcon(true),()->getHoveredSlot() != null && getHoveredSlot().hasItem() ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.whats_this") : null).
+            add(()->getActiveType().isKeyboard() ? getKeyIcon(InputConstants.MOUSE_BUTTON_LEFT,true) : ControllerBinding.LEFT_TRIGGER.bindingState.getIcon(true),()-> menu.getCarried().getCount() > 1 ? CONTROL_ACTION_CACHE.getUnchecked("legacy.action.distribute") : null);
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void keyPressed(int i, int j, int k, CallbackInfoReturnable<Boolean> cir) {
@@ -87,7 +88,7 @@ AbstractContainerScreenMixin extends Screen implements LegacyMenuAccess {
             this.onClose();
             cir.setReturnValue(true);
         }
-        if (i == InputConstants.KEY_W && hoveredSlot != null && hoveredSlot.hasItem() && ScreenUtil.hasTip(hoveredSlot.getItem())) {
+        if (i == ((LegacyKeyMapping)minecraft.options.keyUp).getKey().getValue() && hoveredSlot != null && hoveredSlot.hasItem() && ScreenUtil.hasTip(hoveredSlot.getItem())) {
             ScreenUtil.playSimpleUISound(SoundEvents.UI_BUTTON_CLICK.value(),1.0f);
             LegacyTip oldTip = LegacyTipManager.tips.isEmpty() ? null : LegacyTipManager.tips.get(0);
             if (oldTip == null) ScreenUtil.addTip(hoveredSlot.getItem().copy());

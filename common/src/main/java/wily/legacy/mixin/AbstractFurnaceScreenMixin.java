@@ -44,7 +44,7 @@ public abstract class AbstractFurnaceScreenMixin<T extends AbstractFurnaceMenu> 
         super.init();
         this.widthTooNarrow = this.width < 379;
         this.recipeBookComponent.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
-        if (((LegacyOptions)minecraft.options).showVanillaRecipeBook().get()) {
+        if (ScreenUtil.showVanillaRecipeBook()) {
             this.leftPos = this.recipeBookComponent.updateScreenPosition(this.width, this.imageWidth);
             recipeButton = this.addRenderableWidget(new ImageButton(this.leftPos + 49, topPos + 49, 20, 18, RecipeBookComponent.RECIPE_BUTTON_SPRITES, (button) -> {
                 this.recipeBookComponent.toggleVisibility();
